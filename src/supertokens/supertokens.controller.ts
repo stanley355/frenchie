@@ -3,8 +3,6 @@ import {
   Controller,
   InternalServerErrorException,
   Post,
-  Req,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { ChangePasswordDto } from './dto/ChangePasswordDto';
 import { SupertokensService } from './supertokens.service';
@@ -15,10 +13,7 @@ export class SupertokensController {
   @Post('/change-password')
   async changePasswordController(@Body() changePasswordDto: ChangePasswordDto) {
     try {
-      const b = await this.supertokensService.changePassword(changePasswordDto);
-      // console.log(changePasswordRequestBody);
-      // console.log(request.headers);
-      return b;
+      return await this.supertokensService.changePassword(changePasswordDto);
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
