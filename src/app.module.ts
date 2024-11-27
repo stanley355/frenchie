@@ -22,7 +22,6 @@ import { Inventories } from './inventories/inventories.entity';
       database: process.env.PG_DATABASE,
       entities: [Inventories],
       synchronize: true,
-      autoLoadEntities: true,
     }),
     InventoriesModule,
   ],
