@@ -1,11 +1,10 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
-import { IsMultipleOfHalf } from "./IsMultipleOrHalfDto";
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsMultipleOfHalf } from './IsMultipleOrHalfDto';
 
 export class CreateInventoriesDto {
   @IsNotEmpty()
   @IsString()
   name: string;
-
 
   @IsOptional()
   @IsString()

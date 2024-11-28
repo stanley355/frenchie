@@ -9,6 +9,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { InventoriesModule } from './inventories/inventories.module';
 import * as process from 'node:process';
 import { Inventories } from './inventories/inventories.entity';
+import { InventoriesLogsModule } from './inventories-logs/inventories-logs.module';
+import { InventoriesLogs } from './inventories-logs/inventories-logs.entity';
 
 @Module({
   imports: [
@@ -20,10 +22,11 @@ import { Inventories } from './inventories/inventories.entity';
       username: process.env.PG_USERNAME,
       password: process.env.PG_PASSWORD,
       database: process.env.PG_DATABASE,
-      entities: [Inventories],
+      entities: [Inventories, InventoriesLogs],
       synchronize: true,
     }),
     InventoriesModule,
+    InventoriesLogsModule,
   ],
   controllers: [AppController, SupertokensController],
   providers: [AppService, SupertokensService],
