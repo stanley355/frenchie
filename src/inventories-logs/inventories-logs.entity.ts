@@ -3,7 +3,9 @@ import {
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
+  ManyToOne,
 } from 'typeorm';
+import { Inventories } from '../inventories/inventories.entity';
 export enum InventoriesLogsAction {
   Addition = 'addition',
   Substraction = 'substraction',
@@ -13,6 +15,9 @@ export enum InventoriesLogsAction {
 export class InventoriesLogs {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @ManyToOne(() => Inventories, (inventories) => inventories.id)
+  inventories_id: number;
 
   @CreateDateColumn()
   created_at: Date;

@@ -1,8 +1,11 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { InventoriesLogs } from "./inventories-logs.entity";
-import { Repository } from "typeorm";
-import { CreateInventoriesDto } from "../inventories/dto/createInventoriesDto";
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import {
+  InventoriesLogs,
+  InventoriesLogsAction,
+} from './inventories-logs.entity';
+import { Repository } from 'typeorm';
+import { Inventories } from '../inventories/inventories.entity';
 
 @Injectable()
 export class InventoriesLogsService {
@@ -11,11 +14,20 @@ export class InventoriesLogsService {
     private inventoriesLogsRepository: Repository<InventoriesLogs>,
   ) {}
 
-  async createOne(createInventoriesDto: CreateInventoriesDto) {
+  async createOne(inventories: Inventories) {
     try {
-      return await this.inventoriesLogsRepository.save(createInventoriesDto);
+      const data = {
+        inventories_id: inventories.id,
+        name: inventories.name,
+        size: inventories.size,
+        color: inventories.color,
+        amount: inventories.amount,
+        unit: inventories.unit,
+        action: InventoriesLogsAction.Addition,
+      };
+      return await this.inventoriesLogsRepository.save(data);
     } catch (error) {
       throw new InternalServerErrorException(error);
-     }
+    }
   }
 }

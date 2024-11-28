@@ -1,24 +1,38 @@
 import {
   Body,
-  Controller, Get,
+  Controller,
+  Get,
   InternalServerErrorException,
-  Post
-} from "@nestjs/common";
+  Post,
+} from '@nestjs/common';
 import { CreateInventoriesDto } from './dto/createInventoriesDto';
 import { InventoriesLogsService } from '../inventories-logs/inventories-logs.service';
-import { InventoriesService } from "./inventories.service";
+import { InventoriesService } from './inventories.service';
+import { TCreateInventoriesResponse } from "./types/TCreateInventoriesResponse";
 
 @Controller('inventories')
 export class InventoriesController {
-  constructor(private inventoriesLogsService: InventoriesLogsService, private inventoriesService: InventoriesService) {}
+  constructor(
+    private inventoriesLogsService: InventoriesLogsService,
+    private inventoriesService: InventoriesService,
+  ) {}
 
   @Post('/create')
   async createInventoriesController(
     @Body() createInventoriesDto: CreateInventoriesDto,
-  ) {
+  ): Promise<TCreateInventoriesResponse> {
     try {
-      await this.inventoriesLogsService.createOne(createInventoriesDto);
-      return await this.inventoriesService.createOne(createInventoriesDto)
+      const inventories =
+        await this.inventoriesService.createOne(createInventoriesDto);
+      const inventoriesLogs = await this.inventoriesLogsService.createOne(inventories);
+      return  {
+        inventories_id: inventoriesLogs.inventories_id,
+        name: inventoriesLogs.name,
+        size: inventoriesLogs.size,
+        color: inventoriesLogs.color,
+        amount: inventoriesLogs.amount,
+        unit: inventoriesLogs.unit
+      }
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
@@ -29,7 +43,7 @@ export class InventoriesController {
     try {
       return await this.inventoriesService.findAll();
     } catch (e) {
-     throw new InternalServerErrorException(e);
+      throw new InternalServerErrorException(e);
     }
   }
 }
