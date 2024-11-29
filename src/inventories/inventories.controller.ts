@@ -26,7 +26,7 @@ export class InventoriesController {
         await this.inventoriesService.createOne(createInventoriesDto);
       const inventoriesLogs = await this.inventoriesLogsService.createOne(inventories);
       return  {
-        inventories_id: inventoriesLogs.inventories_id,
+        id: inventoriesLogs.inventories_id,
         name: inventoriesLogs.name,
         size: inventoriesLogs.size,
         color: inventoriesLogs.color,

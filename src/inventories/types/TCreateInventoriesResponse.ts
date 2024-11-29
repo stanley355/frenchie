@@ -1,5 +1,5 @@
 export  type TCreateInventoriesResponse = {
-  inventories_id: number;
+  id: number;
   name: string;
   size?: string;
   color?: string;
