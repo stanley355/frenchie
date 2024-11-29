@@ -1,13 +1,10 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   InventoriesLogs,
   InventoriesLogsAction,
 } from './inventories-logs.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Inventories } from '../inventories/inventories.entity';
 import { UpdateInventoriesDto } from '../inventories/dto/updateInventoriesDto';
 
@@ -68,6 +65,24 @@ export class InventoriesLogsService {
       return await this.inventoriesLogsRepository.save(data);
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async findAll(name?: string) {
+    try {
+      return await this.inventoriesLogsRepository.find({
+        take: 100,
+        order: { created_at: 'DESC' },
+        ...(name && {
+          where: [
+            { name: Like(`%${name}`) },
+            { name: Like(`${name}%`) },
+            { name: Like(`%${name}%`) },
+          ],
+        }),
+      });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
     }
   }
 }

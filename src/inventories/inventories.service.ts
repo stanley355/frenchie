@@ -55,7 +55,7 @@ export class InventoriesService {
 
   async findOne(id: number) {
     try {
-      return await this.inventoriesRepository.findOne({where: {id}})
+      return await this.inventoriesRepository.findOne({ where: { id } });
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
