@@ -4,11 +4,12 @@ import {
   Get,
   InternalServerErrorException,
   Post,
+  Query,
 } from '@nestjs/common';
 import { CreateInventoriesDto } from './dto/createInventoriesDto';
 import { InventoriesLogsService } from '../inventories-logs/inventories-logs.service';
 import { InventoriesService } from './inventories.service';
-import { TCreateInventoriesResponse } from "./types/TCreateInventoriesResponse";
+import { TCreateInventoriesResponse } from './types/TCreateInventoriesResponse';
 
 @Controller('inventories')
 export class InventoriesController {
@@ -24,24 +25,25 @@ export class InventoriesController {
     try {
       const inventories =
         await this.inventoriesService.createOne(createInventoriesDto);
-      const inventoriesLogs = await this.inventoriesLogsService.createOne(inventories);
-      return  {
+      const inventoriesLogs =
+        await this.inventoriesLogsService.createOne(inventories);
+      return {
         id: inventoriesLogs.inventories_id,
         name: inventoriesLogs.name,
         size: inventoriesLogs.size,
         color: inventoriesLogs.color,
         amount: inventoriesLogs.amount,
-        unit: inventoriesLogs.unit
-      }
+        unit: inventoriesLogs.unit,
+      };
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
   }
 
   @Get('/findAll')
-  async findAllInventoriesController() {
+  async findAllInventoriesController(@Query('name') name: string) {
     try {
-      return await this.inventoriesService.findAll();
+      return await this.inventoriesService.findAll(name);
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
