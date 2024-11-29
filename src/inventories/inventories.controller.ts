@@ -6,12 +6,14 @@ import {
   InternalServerErrorException,
   Param,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { CreateInventoriesDto } from './dto/createInventoriesDto';
 import { InventoriesLogsService } from '../inventories-logs/inventories-logs.service';
 import { InventoriesService } from './inventories.service';
 import { TCreateInventoriesResponse } from './types/TCreateInventoriesResponse';
+import { UpdateInventoriesDto } from './dto/updateInventoriesDto';
 
 @Controller('inventories')
 export class InventoriesController {
@@ -61,6 +63,27 @@ export class InventoriesController {
         inventoriesLogs,
         inventories,
       };
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  @Put('/:id')
+  async updateInventoriesController(
+    @Param('id') id: number,
+    @Body() updateInventoriesDto: UpdateInventoriesDto,
+  ) {
+    try {
+      if (updateInventoriesDto.amount) {
+        const inventories = await this.inventoriesService.findOne(id);
+        if (inventories.amount !== updateInventoriesDto.amount) {
+          await this.inventoriesLogsService.createOneFromUpdate(
+            inventories,
+            updateInventoriesDto,
+          );
+        }
+      }
+      return await this.inventoriesService.updateOne(id, updateInventoriesDto);
     } catch (e) {
       throw new InternalServerErrorException(e);
     }

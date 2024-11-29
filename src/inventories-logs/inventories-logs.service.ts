@@ -1,4 +1,7 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   InventoriesLogs,
@@ -6,6 +9,7 @@ import {
 } from './inventories-logs.entity';
 import { Repository } from 'typeorm';
 import { Inventories } from '../inventories/inventories.entity';
+import { UpdateInventoriesDto } from '../inventories/dto/updateInventoriesDto';
 
 @Injectable()
 export class InventoriesLogsService {
@@ -38,6 +42,32 @@ export class InventoriesLogsService {
       });
     } catch (e) {
       throw new InternalServerErrorException(e);
+    }
+  }
+
+  async createOneFromUpdate(
+    inventories: Inventories,
+    updateData: UpdateInventoriesDto,
+  ) {
+    try {
+      const isAddition = updateData.amount > inventories.amount;
+
+      const data = {
+        inventories_id: inventories.id,
+        name: inventories.name,
+        size: inventories.size,
+        color: inventories.color,
+        amount: isAddition
+          ? updateData.amount - inventories.amount
+          : inventories.amount - updateData.amount,
+        unit: inventories.unit,
+        action: isAddition
+          ? InventoriesLogsAction.Addition
+          : InventoriesLogsAction.Substraction,
+      };
+      return await this.inventoriesLogsRepository.save(data);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
   }
 }

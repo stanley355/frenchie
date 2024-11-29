@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { Inventories } from './inventories.entity';
 import { CreateInventoriesDto } from './dto/createInventoriesDto';
+import { UpdateInventoriesDto } from './dto/updateInventoriesDto';
 
 @Injectable()
 export class InventoriesService {
@@ -39,6 +40,22 @@ export class InventoriesService {
   async deleteOne(id: number) {
     try {
       return await this.inventoriesRepository.delete({ id });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  async updateOne(id: number, updateData: UpdateInventoriesDto) {
+    try {
+      return await this.inventoriesRepository.update(id, updateData);
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  async findOne(id: number) {
+    try {
+      return await this.inventoriesRepository.findOne({where: {id}})
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
