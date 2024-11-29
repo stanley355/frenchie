@@ -30,4 +30,14 @@ export class InventoriesLogsService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async deleteByInventoriesId(id: number) {
+    try {
+      return await this.inventoriesLogsRepository.delete({
+        inventories_id: id,
+      });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
 }

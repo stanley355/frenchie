@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   InternalServerErrorException,
+  Param,
   Post,
   Query,
 } from '@nestjs/common';
@@ -44,6 +46,21 @@ export class InventoriesController {
   async findAllInventoriesController(@Query('name') name: string) {
     try {
       return await this.inventoriesService.findAll(name);
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  @Delete('/:id')
+  async deleteInventoriesController(@Param('id') id: number) {
+    try {
+      const inventoriesLogs =
+        await this.inventoriesLogsService.deleteByInventoriesId(id);
+      const inventories = await this.inventoriesService.deleteOne(id);
+      return {
+        inventoriesLogs,
+        inventories,
+      };
     } catch (e) {
       throw new InternalServerErrorException(e);
     }

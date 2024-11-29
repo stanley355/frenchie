@@ -35,4 +35,12 @@ export class InventoriesService {
       throw new InternalServerErrorException(e);
     }
   }
+
+  async deleteOne(id: number) {
+    try {
+      return await this.inventoriesRepository.delete({ id });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
 }
