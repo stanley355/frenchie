@@ -15,10 +15,8 @@ export class SupertokensMiddleware implements NestMiddleware {
         throw new UnauthorizedException();
       }
 
-      console.log("Token:", authorization);
       const sessionVerification =
         await this.supertokensService.verifySession(authorization);
-      console.log("Session verification: ", sessionVerification);
       if (sessionVerification.status !== 'OK') {
         throw new UnauthorizedException(sessionVerification.message);
       }
