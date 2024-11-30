@@ -25,3 +25,17 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/frenchie:latest
+          build-args: |
+            PORT=${{ secrets.PORT }}
+            APP_NAME=${{ secrets.APP_NAME }}
+            HOST=${{ secrets.HOST }}
+            FRONTEND_HOST=${{ secrets.FRONTEND_HOST }}
+            PG_HOST=${{ secrets.PG_HOST }}
+            PG_PORT=${{ secrets.PG_PORT }}
+            PG_USERNAME=${{ secrets.PG_USERNAME }}
+            PG_PASSWORD=${{ secrets.PG_PASSWORD }}
+            PG_DATABASE=${{ secrets.PG_DATABASE }}
+            SUPERTOKENS_TENANT_ID=${{ secrets.SUPERTOKENS_TENANT_ID }}
+            SUPERTOKENS_API_URL=${{ secrets.SUPERTOKENS_API_URL }}
+            SUPERTOKENS_API_KEY=${{ secrets.SUPERTOKENS_API_KEY }}
+
