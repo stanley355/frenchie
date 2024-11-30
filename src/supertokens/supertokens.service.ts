@@ -6,25 +6,24 @@ import { TVerifySessionResponse } from './types/VerifySessionResponse';
 import { ChangePasswordDto } from './dto/ChangePasswordDto';
 import EmailPassword from 'supertokens-node/recipe/emailpassword';
 
-const supertokensInit =   {
-  supertokens: {
-    connectionURI: process.env.SUPERTOKENS_API_URL,
-    apiKey: process.env.SUPERTOKENS_API_KEY,
-  },
-  appInfo: {
-    appName: process.env.APP_NAME,
-    apiDomain: process.env.HOST,
-    websiteDomain: process.env.FRONTEND_HOST,
-    apiBasePath: '/',
-    websiteBasePath: '/',
-  },
-  recipeList: [EmailPassword.init()],
-}
-console.log(supertokensInit);
+
 @Injectable()
 export class SupertokensService {
   constructor() {
-    supertokens.init(supertokensInit);
+    supertokens.init({
+      supertokens: {
+        connectionURI: process.env.SUPERTOKENS_API_URL,
+        apiKey: process.env.SUPERTOKENS_API_KEY,
+      },
+      appInfo: {
+        appName: process.env.APP_NAME,
+        apiDomain: process.env.HOST,
+        websiteDomain: process.env.FRONTEND_HOST,
+        apiBasePath: '/',
+        websiteBasePath: '/',
+      },
+      recipeList: [EmailPassword.init()],
+    });
   }
 
   async verifySession(accessToken: string): Promise<TVerifySessionResponse> {
