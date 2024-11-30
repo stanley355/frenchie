@@ -23,7 +23,7 @@ export class InventoriesService {
   async findAll(name?: string) {
     try {
       return await this.inventoriesRepository.find({
-        order: { updated_at: 'DESC' },
+        order: { id: 'DESC' },
         ...(name && {
           where: [
             { name: Like(`%${name}`) },

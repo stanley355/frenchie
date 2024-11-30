@@ -72,7 +72,7 @@ export class InventoriesLogsService {
     try {
       return await this.inventoriesLogsRepository.find({
         take: 100,
-        order: { created_at: 'DESC' },
+        order: { id: 'DESC' },
         ...(name && {
           where: [
             { name: Like(`%${name}`) },
