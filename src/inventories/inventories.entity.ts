@@ -31,4 +31,7 @@ export class Inventories {
 
   @Column({ nullable: true })
   unit: string;
+
+  @Column()
+  brand: string;
 }

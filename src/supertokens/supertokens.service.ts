@@ -6,7 +6,6 @@ import { TVerifySessionResponse } from './types/VerifySessionResponse';
 import { ChangePasswordDto } from './dto/ChangePasswordDto';
 import EmailPassword from 'supertokens-node/recipe/emailpassword';
 
-
 @Injectable()
 export class SupertokensService {
   constructor() {

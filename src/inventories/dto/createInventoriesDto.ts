@@ -8,11 +8,11 @@ export class CreateInventoriesDto {
 
   @IsOptional()
   @IsString()
-  size: string;
+  size?: string;
 
   @IsOptional()
   @IsString()
-  color: string;
+  color?: string;
 
   @IsNotEmpty()
   @IsNumber()
@@ -21,5 +21,9 @@ export class CreateInventoriesDto {
 
   @IsOptional()
   @IsString()
-  unit: string;
+  unit?: string;
+
+  @IsNotEmpty()
+  @IsString()
+  brand: string;
 }

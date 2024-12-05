@@ -27,10 +27,19 @@ export class InventoriesController {
     @Body() createInventoriesDto: CreateInventoriesDto,
   ): Promise<TCreateInventoriesResponse> {
     try {
+      const newInventoriesDto: CreateInventoriesDto = {
+        name: createInventoriesDto.name.toLowerCase(),
+        brand: createInventoriesDto.brand.toLowerCase(),
+        amount: createInventoriesDto.amount,
+        unit: createInventoriesDto.unit ? createInventoriesDto.unit.toLowerCase() : "",
+        size: createInventoriesDto.size ? createInventoriesDto.size.toLowerCase() : "",
+        color: createInventoriesDto.color ?  createInventoriesDto.color.toLowerCase(): "",
+      };
+
       const inventories =
-        await this.inventoriesService.createOne(createInventoriesDto);
+        await this.inventoriesService.createOne(newInventoriesDto);
       const inventoriesLogs =
-        await this.inventoriesLogsService.createOne(inventories);
+        await this.inventoriesLogsService.createNewAddition(inventories);
       return {
         id: inventoriesLogs.inventories_id,
         name: inventoriesLogs.name,
@@ -38,6 +47,7 @@ export class InventoriesController {
         color: inventoriesLogs.color,
         amount: inventoriesLogs.amount,
         unit: inventoriesLogs.unit,
+        brand: inventoriesLogs.brand,
       };
     } catch (e) {
       throw new InternalServerErrorException(e);

@@ -39,4 +39,7 @@ export class InventoriesLogs {
 
   @Column({ type: 'enum', enum: InventoriesLogsAction, nullable: true })
   action: InventoriesLogsAction;
+
+  @Column()
+  brand: string;
 }

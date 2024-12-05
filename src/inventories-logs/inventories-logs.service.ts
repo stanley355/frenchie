@@ -15,23 +15,6 @@ export class InventoriesLogsService {
     private inventoriesLogsRepository: Repository<InventoriesLogs>,
   ) {}
 
-  async createOne(inventories: Inventories) {
-    try {
-      const data = {
-        inventories_id: inventories.id,
-        name: inventories.name,
-        size: inventories.size,
-        color: inventories.color,
-        amount: inventories.amount,
-        unit: inventories.unit,
-        action: InventoriesLogsAction.Addition,
-      };
-      return await this.inventoriesLogsRepository.save(data);
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
-  }
-
   async deleteByInventoriesId(id: number) {
     try {
       return await this.inventoriesLogsRepository.delete({
@@ -83,6 +66,24 @@ export class InventoriesLogsService {
       });
     } catch (e) {
       throw new InternalServerErrorException(e);
+    }
+  }
+
+  async createNewAddition(inventories: Inventories) {
+    try {
+      const data = {
+        inventories_id: inventories.id,
+        name: inventories.name,
+        size: inventories.size,
+        color: inventories.color,
+        amount: inventories.amount,
+        unit: inventories.unit,
+        action: InventoriesLogsAction.Addition,
+        brand: inventories.brand,
+      };
+      return await this.inventoriesLogsRepository.save(data);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
   }
 }
