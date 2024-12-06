@@ -13,24 +13,50 @@ export class InventoriesService {
   ) {}
 
   async createOne(createInventoriesDto: CreateInventoriesDto) {
+    const newInventoriesDto: CreateInventoriesDto = {
+      name: createInventoriesDto.name.toLowerCase(),
+      brand: createInventoriesDto.brand.toLowerCase(),
+      amount: createInventoriesDto.amount,
+      unit: createInventoriesDto.unit
+        ? createInventoriesDto.unit.toLowerCase()
+        : '',
+      size: createInventoriesDto.size
+        ? createInventoriesDto.size.toLowerCase()
+        : '',
+      color: createInventoriesDto.color
+        ? createInventoriesDto.color.toLowerCase()
+        : '',
+    };
     try {
-      return await this.inventoriesRepository.save(createInventoriesDto);
+      return await this.inventoriesRepository.save(newInventoriesDto);
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
   }
 
-  async findAll(name?: string) {
+  createFindAllWhereFilter(name?: string, brand?: string) {
+    const whereFilter = [
+      {
+        ...(name && { name: Like(`%${name}`) }),
+        ...(brand && { brand: Like(`%${brand}`) }),
+      },
+      {
+        ...(name && { name: Like(`%${name}%`) }),
+        ...(brand && { brand: Like(`%${brand}%`) }),
+      },
+      {
+        ...(name && { name: Like(`${name}%`) }),
+        ...(brand && { brand: Like(`${brand}%`) }),
+      },
+    ];
+    return { where: whereFilter };
+  }
+
+  async findAll(name?: string, brand?: string) {
     try {
       return await this.inventoriesRepository.find({
         order: { id: 'DESC' },
-        ...(name && {
-          where: [
-            { name: Like(`%${name}`) },
-            { name: Like(`${name}%`) },
-            { name: Like(`%${name}%`) },
-          ],
-        }),
+        ...((name || brand) && this.createFindAllWhereFilter(name, brand)),
       });
     } catch (e) {
       throw new InternalServerErrorException(e);

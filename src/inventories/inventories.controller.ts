@@ -27,17 +27,8 @@ export class InventoriesController {
     @Body() createInventoriesDto: CreateInventoriesDto,
   ): Promise<TCreateInventoriesResponse> {
     try {
-      const newInventoriesDto: CreateInventoriesDto = {
-        name: createInventoriesDto.name.toLowerCase(),
-        brand: createInventoriesDto.brand.toLowerCase(),
-        amount: createInventoriesDto.amount,
-        unit: createInventoriesDto.unit ? createInventoriesDto.unit.toLowerCase() : "",
-        size: createInventoriesDto.size ? createInventoriesDto.size.toLowerCase() : "",
-        color: createInventoriesDto.color ?  createInventoriesDto.color.toLowerCase(): "",
-      };
-
       const inventories =
-        await this.inventoriesService.createOne(newInventoriesDto);
+        await this.inventoriesService.createOne(createInventoriesDto);
       const inventoriesLogs =
         await this.inventoriesLogsService.createNewAddition(inventories);
       return {
@@ -55,9 +46,12 @@ export class InventoriesController {
   }
 
   @Get('/findAll')
-  async findAllInventoriesController(@Query('name') name: string) {
+  async findAllInventoriesController(
+    @Query('name') name: string,
+    @Query('brand') brand: string,
+  ) {
     try {
-      return await this.inventoriesService.findAll(name);
+      return await this.inventoriesService.findAll(name, brand);
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
