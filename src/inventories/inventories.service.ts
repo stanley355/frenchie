@@ -4,6 +4,7 @@ import { Like, Repository } from 'typeorm';
 import { Inventories } from './inventories.entity';
 import { CreateInventoriesDto } from './dto/createInventoriesDto';
 import { UpdateInventoriesDto } from './dto/updateInventoriesDto';
+import { distinct } from 'rxjs';
 
 @Injectable()
 export class InventoriesService {
@@ -34,29 +35,23 @@ export class InventoriesService {
     }
   }
 
-  createFindAllWhereFilter(name?: string, brand?: string) {
+  createFindAllWhereFilter(query?: string) {
     const whereFilter = [
-      {
-        ...(name && { name: Like(`%${name}`) }),
-        ...(brand && { brand: Like(`%${brand}`) }),
-      },
-      {
-        ...(name && { name: Like(`%${name}%`) }),
-        ...(brand && { brand: Like(`%${brand}%`) }),
-      },
-      {
-        ...(name && { name: Like(`${name}%`) }),
-        ...(brand && { brand: Like(`${brand}%`) }),
-      },
+      { name: Like(`%${query}`) },
+      { brand: Like(`%${query}`) },
+      { name: Like(`%${query}%`) },
+      { brand: Like(`%${query}%`) },
+      { name: Like(`${query}%`) },
+      { brand: Like(`${query}%`) },
     ];
     return { where: whereFilter };
   }
 
-  async findAll(name?: string, brand?: string) {
+  async findAll(query?: string) {
     try {
       return await this.inventoriesRepository.find({
         order: { id: 'DESC' },
-        ...((name || brand) && this.createFindAllWhereFilter(name, brand)),
+        ...(query && this.createFindAllWhereFilter(query)),
       });
     } catch (e) {
       throw new InternalServerErrorException(e);
@@ -82,6 +77,18 @@ export class InventoriesService {
   async findOne(id: number) {
     try {
       return await this.inventoriesRepository.findOne({ where: { id } });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  async findAllDistinctBrand() {
+    try {
+      const distinctBrands = await this.inventoriesRepository.query(
+        'SELECT DISTINCT brand FROM inventories;',
+      );
+
+      return distinctBrands.map((row: { brand: string }) => row.brand);
     } catch (e) {
       throw new InternalServerErrorException(e);
     }

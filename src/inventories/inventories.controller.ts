@@ -46,12 +46,9 @@ export class InventoriesController {
   }
 
   @Get('/findAll')
-  async findAllInventoriesController(
-    @Query('name') name: string,
-    @Query('brand') brand: string,
-  ) {
+  async findAllInventoriesController(@Query('query') query: string) {
     try {
-      return await this.inventoriesService.findAll(name, brand);
+      return await this.inventoriesService.findAll(query);
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
@@ -88,6 +85,15 @@ export class InventoriesController {
         }
       }
       return await this.inventoriesService.updateOne(id, updateInventoriesDto);
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  @Get('/findAllBrands')
+  async findAllInventoriesBrandsController() {
+    try {
+      return await this.inventoriesService.findAllDistinctBrand();
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
