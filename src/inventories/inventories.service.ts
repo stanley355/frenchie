@@ -115,7 +115,12 @@ export class InventoriesService {
         'SELECT DISTINCT brand FROM inventories;',
       );
 
-      return distinctBrands.map((row: { brand: string }) => row.brand);
+      return distinctBrands.map((row: { brand: string }) => {
+        return {
+          label: row.brand,
+          value: row.brand,
+        };
+      });
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
@@ -123,11 +128,18 @@ export class InventoriesService {
 
   async findAllDistinctSize() {
     try {
-      const distinctSize= await this.inventoriesRepository.query(
-        'SELECT DISTINCT size FROM inventories;',
+      const distinctSize = await this.inventoriesRepository.query(
+        'SELECT DISTINCT size FROM inventories',
       );
 
-      return distinctSize.map((row: { size: string }) => row.size);
+      return distinctSize
+        .filter((row: { size: string }) => row.size)
+        .map((row: { size: string }) => {
+          return {
+            label: row.size,
+            value: row.size,
+          };
+        });
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
@@ -135,11 +147,18 @@ export class InventoriesService {
 
   async findAllDistinctColor() {
     try {
-      const distinctColors= await this.inventoriesRepository.query(
+      const distinctColors = await this.inventoriesRepository.query(
         'SELECT DISTINCT color FROM inventories;',
       );
 
-      return distinctColors.map((row: { color: string }) => row.color);
+      return distinctColors
+        .filter((row: { color: string }) => row.color)
+        .map((row: { color: string }) => {
+          return {
+            label: row.color,
+            value: row.color,
+          };
+        });
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
