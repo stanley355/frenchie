@@ -46,9 +46,14 @@ export class InventoriesController {
   }
 
   @Get('/findAll')
-  async findAllInventoriesController(@Query('query') query: string) {
+  async findAllInventoriesController(
+    @Query('name') name: string,
+    @Query('brand') brand: string,
+    @Query('size') size: string,
+    @Query('color') color: string,
+  ) {
     try {
-      return await this.inventoriesService.findAll(query);
+      return await this.inventoriesService.findAll(name, brand, size, color);
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
@@ -94,6 +99,24 @@ export class InventoriesController {
   async findAllInventoriesBrandsController() {
     try {
       return await this.inventoriesService.findAllDistinctBrand();
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  @Get('/findAllSize')
+  async findAllInventoriesSizeController() {
+    try {
+      return await this.inventoriesService.findAllDistinctSize();
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  @Get('/findAllColor')
+  async findAllInventoriesColorController() {
+    try {
+      return await this.inventoriesService.findAllDistinctColor();
     } catch (e) {
       throw new InternalServerErrorException(e);
     }

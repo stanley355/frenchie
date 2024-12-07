@@ -4,7 +4,6 @@ import { Like, Repository } from 'typeorm';
 import { Inventories } from './inventories.entity';
 import { CreateInventoriesDto } from './dto/createInventoriesDto';
 import { UpdateInventoriesDto } from './dto/updateInventoriesDto';
-import { distinct } from 'rxjs';
 
 @Injectable()
 export class InventoriesService {
@@ -35,23 +34,51 @@ export class InventoriesService {
     }
   }
 
-  createFindAllWhereFilter(query?: string) {
+  createFindAllWhereFilter(
+    name?: string,
+    brand?: string,
+    size?: string,
+    color?: string,
+  ) {
+    const firstMap = new Map();
+    const secondMap = new Map();
+    const thirdMap = new Map();
+    if (name) {
+      firstMap.set('name', Like(`%${name}`));
+      secondMap.set('name', Like(`%${name}%`));
+      thirdMap.set('name', Like(`${name}%`));
+    }
+
+    if (brand) {
+      firstMap.set('brand', brand);
+      secondMap.set('brand', brand);
+      thirdMap.set('brand', brand);
+    }
+
+    if (size) {
+      firstMap.set('size', size);
+      secondMap.set('size', size);
+      thirdMap.set('size', size);
+    }
+    if (color) {
+      firstMap.set('color', color);
+      secondMap.set('color', color);
+      thirdMap.set('color', color);
+    }
     const whereFilter = [
-      { name: Like(`%${query}`) },
-      { brand: Like(`%${query}`) },
-      { name: Like(`%${query}%`) },
-      { brand: Like(`%${query}%`) },
-      { name: Like(`${query}%`) },
-      { brand: Like(`${query}%`) },
+      Object.fromEntries(firstMap.entries()),
+      Object.fromEntries(secondMap.entries()),
+      Object.fromEntries(thirdMap.entries()),
     ];
     return { where: whereFilter };
   }
 
-  async findAll(query?: string) {
+  async findAll(name?: string, brand?: string, size?: string, color?: string) {
     try {
       return await this.inventoriesRepository.find({
         order: { id: 'DESC' },
-        ...(query && this.createFindAllWhereFilter(query)),
+        ...((name || brand || size || color) &&
+          this.createFindAllWhereFilter(name, brand, size, color)),
       });
     } catch (e) {
       throw new InternalServerErrorException(e);
@@ -89,6 +116,30 @@ export class InventoriesService {
       );
 
       return distinctBrands.map((row: { brand: string }) => row.brand);
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  async findAllDistinctSize() {
+    try {
+      const distinctSize= await this.inventoriesRepository.query(
+        'SELECT DISTINCT size FROM inventories;',
+      );
+
+      return distinctSize.map((row: { size: string }) => row.size);
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  async findAllDistinctColor() {
+    try {
+      const distinctColors= await this.inventoriesRepository.query(
+        'SELECT DISTINCT color FROM inventories;',
+      );
+
+      return distinctColors.map((row: { color: string }) => row.color);
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
