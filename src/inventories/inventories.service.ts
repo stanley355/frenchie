@@ -109,18 +109,25 @@ export class InventoriesService {
     }
   }
 
+  populateOptionsArray(optionsArray: {label: string, value: string}[]) {
+    const baseOption = [{label: "Semua", value: ""}];
+    const newOptionsArray = baseOption.concat(optionsArray);
+    return newOptionsArray
+}
+
   async findAllDistinctBrand() {
     try {
       const distinctBrands = await this.inventoriesRepository.query(
         'SELECT DISTINCT brand FROM inventories;',
       );
 
-      return distinctBrands.map((row: { brand: string }) => {
+      const optionsArray = distinctBrands.map((row: { brand: string }) => {
         return {
           label: row.brand,
           value: row.brand,
         };
       });
+      return this.populateOptionsArray(optionsArray);
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
@@ -132,7 +139,7 @@ export class InventoriesService {
         'SELECT DISTINCT size FROM inventories',
       );
 
-      return distinctSize
+      const optionsArray = distinctSize
         .filter((row: { size: string }) => row.size)
         .map((row: { size: string }) => {
           return {
@@ -140,6 +147,7 @@ export class InventoriesService {
             value: row.size,
           };
         });
+      return this.populateOptionsArray(optionsArray)
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
@@ -151,7 +159,7 @@ export class InventoriesService {
         'SELECT DISTINCT color FROM inventories;',
       );
 
-      return distinctColors
+      const optionsArray = distinctColors
         .filter((row: { color: string }) => row.color)
         .map((row: { color: string }) => {
           return {
@@ -159,6 +167,8 @@ export class InventoriesService {
             value: row.color,
           };
         });
+
+      return this.populateOptionsArray(optionsArray)
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
