@@ -51,18 +51,51 @@ export class InventoriesLogsService {
     }
   }
 
-  async findAll(name?: string) {
+  createFindAllWhereFilter(
+    name?: string,
+    brand?: string,
+    size?: string,
+    color?: string,
+  ) {
+    const firstMap = new Map();
+    const secondMap = new Map();
+    const thirdMap = new Map();
+    if (name) {
+      firstMap.set('name', Like(`%${name}`));
+      secondMap.set('name', Like(`%${name}%`));
+      thirdMap.set('name', Like(`${name}%`));
+    }
+
+    if (brand) {
+      firstMap.set('brand', brand);
+      secondMap.set('brand', brand);
+      thirdMap.set('brand', brand);
+    }
+
+    if (size) {
+      firstMap.set('size', size);
+      secondMap.set('size', size);
+      thirdMap.set('size', size);
+    }
+    if (color) {
+      firstMap.set('color', color);
+      secondMap.set('color', color);
+      thirdMap.set('color', color);
+    }
+    const whereFilter = [
+      Object.fromEntries(firstMap.entries()),
+      Object.fromEntries(secondMap.entries()),
+      Object.fromEntries(thirdMap.entries()),
+    ];
+    return { where: whereFilter };
+  }
+
+  async findAll(name?: string, brand?: string, size?: string, color?: string) {
     try {
       return await this.inventoriesLogsRepository.find({
-        take: 100,
         order: { id: 'DESC' },
-        ...(name && {
-          where: [
-            { name: Like(`%${name}`) },
-            { name: Like(`${name}%`) },
-            { name: Like(`%${name}%`) },
-          ],
-        }),
+        ...((name || brand || size || color) &&
+          this.createFindAllWhereFilter(name, brand, size, color)),
       });
     } catch (e) {
       throw new InternalServerErrorException(e);

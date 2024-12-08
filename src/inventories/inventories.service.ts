@@ -109,11 +109,11 @@ export class InventoriesService {
     }
   }
 
-  populateOptionsArray(optionsArray: {label: string, value: string}[]) {
-    const baseOption = [{label: "Semua", value: ""}];
+  populateOptionsArray(optionsArray: { label: string; value: string }[]) {
+    const baseOption = [{ label: 'Semua', value: '' }];
     const newOptionsArray = baseOption.concat(optionsArray);
-    return newOptionsArray
-}
+    return newOptionsArray;
+  }
 
   async findAllDistinctBrand() {
     try {
@@ -147,7 +147,7 @@ export class InventoriesService {
             value: row.size,
           };
         });
-      return this.populateOptionsArray(optionsArray)
+      return this.populateOptionsArray(optionsArray);
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
@@ -168,7 +168,7 @@ export class InventoriesService {
           };
         });
 
-      return this.populateOptionsArray(optionsArray)
+      return this.populateOptionsArray(optionsArray);
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
