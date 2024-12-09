@@ -28,7 +28,18 @@ export class BillsController {
         .reduce((a, b) => a + b, 0);
 
       const bill = await this.billsService.createDefault(itemCount, totalPrice);
-      return this.billsItemsService.createMultiple(bill.id, createBillsDto);
+      const billItems = await this.billsItemsService.createMultiple(
+        bill.id,
+        createBillsDto,
+      );
+      const isSuccess = billItems.every(
+        (billItems) => billItems.status === 'fulfilled',
+      );
+      return {
+        status: isSuccess ? 201 : 500,
+        data: isSuccess,
+        message: isSuccess ? 'success' : 'internal server error',
+      };
     } catch (e) {
       throw new InternalServerErrorException(e);
     }

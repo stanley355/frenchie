@@ -173,4 +173,17 @@ export class InventoriesService {
       throw new InternalServerErrorException(e);
     }
   }
+
+  async subtractAmount(id: number, subtractAmount: number) {
+    try {
+      const inventory = await this.findOne(id);
+      const updatedInventory = await this.inventoriesRepository.save({
+        id: inventory.id,
+        amount: inventory.amount - subtractAmount,
+      });
+      return { ...inventory, ...updatedInventory };
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
 }

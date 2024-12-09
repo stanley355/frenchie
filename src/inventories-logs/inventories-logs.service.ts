@@ -119,4 +119,27 @@ export class InventoriesLogsService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async create(
+    inventories: Inventories,
+    amount: number,
+    action: InventoriesLogsAction,
+  ) {
+    try {
+      const data = {
+        inventories_id: inventories.id,
+        name: inventories.name,
+        size: inventories.size,
+        color: inventories.color,
+        amount,
+        unit: inventories.unit,
+        action,
+        brand: inventories.brand,
+      };
+
+      return await this.inventoriesLogsRepository.save(data);
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
 }
