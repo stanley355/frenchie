@@ -6,6 +6,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { Inventories } from '../inventories/inventories.entity';
+import { Bills } from '../bills/bills.entity';
 
 @Entity({ name: 'bills_items' })
 export class BillsItems {
@@ -29,8 +30,17 @@ export class BillsItems {
   @Column()
   name: string;
 
+  @Column({ nullable: true })
+  size: string;
+
+  @Column({ nullable: true })
+  color: string;
+
   @Column({ type: 'float', default: 0.0 })
   amount: number;
+
+  @Column({ nullable: true })
+  unit: string;
 
   @Column()
   price: number;
