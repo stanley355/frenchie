@@ -1,13 +1,14 @@
 import {
   Body,
   Controller, Get,
-  InternalServerErrorException,
+  InternalServerErrorException, Param,
   ParseArrayPipe,
-  Post, Query
+  Post, Put, Query
 } from "@nestjs/common";
 import { BillsService } from './bills.service';
 import { CreateBillsDto } from './dto/createBillsDto';
 import { BillsItemsService } from '../bills-items/bills-items.service';
+import { UpdateBillsDto } from "./dto/updateBillsDto";
 
 @Controller('bills')
 export class BillsController {
@@ -49,6 +50,15 @@ export class BillsController {
   async findAllBills(@Query('id') id: number) {
     try {
      return await this.billsService.findAll(id);
+    } catch (e) {
+     throw new InternalServerErrorException(e);
+    }
+  }
+
+  @Put('/:id')
+  async updateBills(@Param('id') id: number, @Body() updateBillsDto: UpdateBillsDto) {
+    try {
+     return await this.billsService.updateOne(id, updateBillsDto)
     } catch (e) {
      throw new InternalServerErrorException(e);
     }
