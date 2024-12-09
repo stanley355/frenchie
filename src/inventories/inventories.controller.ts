@@ -14,6 +14,7 @@ import { InventoriesLogsService } from '../inventories-logs/inventories-logs.ser
 import { InventoriesService } from './inventories.service';
 import { TCreateInventoriesResponse } from './types/TCreateInventoriesResponse';
 import { UpdateInventoriesDto } from './dto/updateInventoriesDto';
+import { InventoriesLogsAction } from '../inventories-logs/inventories-logs.entity';
 
 @Controller('inventories')
 export class InventoriesController {
@@ -29,8 +30,11 @@ export class InventoriesController {
     try {
       const inventories =
         await this.inventoriesService.createOne(createInventoriesDto);
-      const inventoriesLogs =
-        await this.inventoriesLogsService.createNewAddition(inventories);
+      const inventoriesLogs = await this.inventoriesLogsService.create(
+        inventories,
+        inventories.amount,
+        InventoriesLogsAction.Addition,
+      );
       return {
         id: inventoriesLogs.inventories_id,
         name: inventoriesLogs.name,
@@ -80,14 +84,20 @@ export class InventoriesController {
     @Body() updateInventoriesDto: UpdateInventoriesDto,
   ) {
     try {
-      if (updateInventoriesDto.amount) {
-        const inventories = await this.inventoriesService.findOne(id);
-        if (inventories.amount !== updateInventoriesDto.amount) {
-          await this.inventoriesLogsService.createOneFromUpdate(
-            inventories,
-            updateInventoriesDto,
-          );
-        }
+      const inventories = await this.inventoriesService.findOne(id);
+      if (inventories.amount !== updateInventoriesDto.amount) {
+        const isAddition = updateInventoriesDto.amount > inventories.amount;
+        const logAmount = isAddition
+          ? updateInventoriesDto.amount - inventories.amount
+          : inventories.amount - updateInventoriesDto.amount;
+        const action = isAddition
+          ? InventoriesLogsAction.Addition
+          : InventoriesLogsAction.Substraction;
+        await this.inventoriesLogsService.create(
+          inventories,
+          logAmount,
+          action,
+        );
       }
       return await this.inventoriesService.updateOne(id, updateInventoriesDto);
     } catch (e) {

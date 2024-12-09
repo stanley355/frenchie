@@ -6,7 +6,6 @@ import {
 } from './inventories-logs.entity';
 import { Like, Repository } from 'typeorm';
 import { Inventories } from '../inventories/inventories.entity';
-import { UpdateInventoriesDto } from '../inventories/dto/updateInventoriesDto';
 
 @Injectable()
 export class InventoriesLogsService {
@@ -22,32 +21,6 @@ export class InventoriesLogsService {
       });
     } catch (e) {
       throw new InternalServerErrorException(e);
-    }
-  }
-
-  async createOneFromUpdate(
-    inventories: Inventories,
-    updateData: UpdateInventoriesDto,
-  ) {
-    try {
-      const isAddition = updateData.amount > inventories.amount;
-
-      const data = {
-        inventories_id: inventories.id,
-        name: inventories.name,
-        size: inventories.size,
-        color: inventories.color,
-        amount: isAddition
-          ? updateData.amount - inventories.amount
-          : inventories.amount - updateData.amount,
-        unit: inventories.unit,
-        action: isAddition
-          ? InventoriesLogsAction.Addition
-          : InventoriesLogsAction.Substraction,
-      };
-      return await this.inventoriesLogsRepository.save(data);
-    } catch (error) {
-      throw new InternalServerErrorException(error);
     }
   }
 
@@ -99,24 +72,6 @@ export class InventoriesLogsService {
       });
     } catch (e) {
       throw new InternalServerErrorException(e);
-    }
-  }
-
-  async createNewAddition(inventories: Inventories) {
-    try {
-      const data = {
-        inventories_id: inventories.id,
-        name: inventories.name,
-        size: inventories.size,
-        color: inventories.color,
-        amount: inventories.amount,
-        unit: inventories.unit,
-        action: InventoriesLogsAction.Addition,
-        brand: inventories.brand,
-      };
-      return await this.inventoriesLogsRepository.save(data);
-    } catch (error) {
-      throw new InternalServerErrorException(error);
     }
   }
 
