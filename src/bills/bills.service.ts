@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Bills } from './bills.entity';
-import { UpdateBillsDto } from "./dto/updateBillsDto";
+import { UpdateBillsDto } from './dto/updateBillsDto';
 
 @Injectable()
 export class BillsService {
@@ -32,11 +32,19 @@ export class BillsService {
     }
   }
 
-  async updateOne(id: number, updateData:UpdateBillsDto) {
+  async updateOne(id: number, updateData: UpdateBillsDto) {
     try {
-     return await this.billsRepository.update(id, updateData);
+      return await this.billsRepository.update(id, updateData);
     } catch (e) {
-     throw new InternalServerErrorException(e);
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  async deleteOne(id: number) {
+    try {
+      return await this.billsRepository.delete(id);
+    } catch (e) {
+      throw new InternalServerErrorException(e);
     }
   }
 }

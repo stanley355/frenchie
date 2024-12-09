@@ -54,4 +54,12 @@ export class BillsItemsService {
       throw new InternalServerErrorException(e);
     }
   }
+
+  async deleteByBillsId(bills_id: number) {
+    try {
+      return this.billsItemsRepository.delete({ bills_id });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
 }

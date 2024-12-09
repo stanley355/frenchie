@@ -1,14 +1,19 @@
 import {
   Body,
-  Controller, Get,
-  InternalServerErrorException, Param,
+  Controller,
+  Delete,
+  Get,
+  InternalServerErrorException,
+  Param,
   ParseArrayPipe,
-  Post, Put, Query
-} from "@nestjs/common";
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { BillsService } from './bills.service';
 import { CreateBillsDto } from './dto/createBillsDto';
 import { BillsItemsService } from '../bills-items/bills-items.service';
-import { UpdateBillsDto } from "./dto/updateBillsDto";
+import { UpdateBillsDto } from './dto/updateBillsDto';
 
 @Controller('bills')
 export class BillsController {
@@ -38,7 +43,7 @@ export class BillsController {
       );
       return {
         status: isSuccess ? 201 : 500,
-        data: isSuccess? bill : null,
+        data: isSuccess ? bill : null,
         message: isSuccess ? 'success' : 'internal server error',
       };
     } catch (e) {
@@ -49,18 +54,35 @@ export class BillsController {
   @Get('/findAll')
   async findAllBills(@Query('id') id: number) {
     try {
-     return await this.billsService.findAll(id);
+      return await this.billsService.findAll(id);
     } catch (e) {
-     throw new InternalServerErrorException(e);
+      throw new InternalServerErrorException(e);
     }
   }
 
   @Put('/:id')
-  async updateBills(@Param('id') id: number, @Body() updateBillsDto: UpdateBillsDto) {
+  async updateBills(
+    @Param('id') id: number,
+    @Body() updateBillsDto: UpdateBillsDto,
+  ) {
     try {
-     return await this.billsService.updateOne(id, updateBillsDto)
+      return await this.billsService.updateOne(id, updateBillsDto);
     } catch (e) {
-     throw new InternalServerErrorException(e);
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  @Delete('/:id')
+  async deleteBill(@Param('id') id: number) {
+    try {
+      const billsItems = await this.billsItemsService.deleteByBillsId(id);
+      const bills = await this.billsService.deleteOne(id);
+      return {
+        billsItems,
+        bills,
+      };
+    } catch (e) {
+      throw new InternalServerErrorException(e);
     }
   }
 }
