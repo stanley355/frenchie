@@ -1,10 +1,10 @@
 import {
   Body,
-  Controller,
+  Controller, Get,
   InternalServerErrorException,
   ParseArrayPipe,
-  Post,
-} from '@nestjs/common';
+  Post, Query
+} from "@nestjs/common";
 import { BillsService } from './bills.service';
 import { CreateBillsDto } from './dto/createBillsDto';
 import { BillsItemsService } from '../bills-items/bills-items.service';
@@ -37,11 +37,20 @@ export class BillsController {
       );
       return {
         status: isSuccess ? 201 : 500,
-        data: isSuccess,
+        data: isSuccess? bill : null,
         message: isSuccess ? 'success' : 'internal server error',
       };
     } catch (e) {
       throw new InternalServerErrorException(e);
+    }
+  }
+
+  @Get('/findAll')
+  async findAllBills(@Query('id') id: number) {
+    try {
+     return await this.billsService.findAll(id);
+    } catch (e) {
+     throw new InternalServerErrorException(e);
     }
   }
 }

@@ -18,4 +18,16 @@ export class BillsService {
       throw new InternalServerErrorException(e);
     }
   }
+
+  async findAll(id?: number) {
+    try {
+      return await this.billsRepository.find({
+        order: { id: 'DESC' },
+        take: 100,
+        ...(id && { where: { id } }),
+      });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
 }
