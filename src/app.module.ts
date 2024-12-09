@@ -11,6 +11,10 @@ import * as process from 'node:process';
 import { Inventories } from './inventories/inventories.entity';
 import { InventoriesLogsModule } from './inventories-logs/inventories-logs.module';
 import { InventoriesLogs } from './inventories-logs/inventories-logs.entity';
+import { BillsModule } from './bills/bills.module';
+import { Bills } from './bills/bills.entity';
+import { BillsItemsModule } from './bills-items/bills-items.module';
+import { BillsItems } from './bills-items/bills-items.entity';
 
 @Module({
   imports: [
@@ -22,11 +26,13 @@ import { InventoriesLogs } from './inventories-logs/inventories-logs.entity';
       username: process.env.PG_USERNAME,
       password: process.env.PG_PASSWORD,
       database: process.env.PG_DATABASE,
-      entities: [Inventories, InventoriesLogs],
+      entities: [Inventories, InventoriesLogs, Bills, BillsItems],
       synchronize: true,
     }),
     InventoriesModule,
     InventoriesLogsModule,
+    BillsModule,
+    BillsItemsModule,
   ],
   controllers: [AppController, SupertokensController],
   providers: [AppService, SupertokensService],
